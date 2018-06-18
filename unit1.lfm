@@ -1,19 +1,54 @@
 object Form1: TForm1
-  Left = -798
-  Height = 604
-  Top = 536
-  Width = 550
+  Left = 3200
+  Height = 603
+  Top = 117
+  Width = 551
   Caption = 'Pacman'
-  ClientHeight = 0
-  ClientWidth = 0
+  ClientHeight = 603
+  ClientWidth = 551
   Color = clBlack
+  DesignTimePPI = 85
   OnKeyDown = FormKeyDown
-  LCLVersion = '1.8.4.0'
+  LCLVersion = '1.8.2.0'
+  object Llives: TLabel
+    Left = 280
+    Height = 24
+    Top = 568
+    Width = 71
+    Caption = 'LIVES:'
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clWindow
+    Font.Height = -20
+    Font.Name = 'Small Fonts'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+    OnClick = LlivesClick
+  end
+  object Lscore: TLabel
+    Left = 56
+    Height = 24
+    Top = 568
+    Width = 83
+    Caption = 'SCORE:'
+    Font.CharSet = ANSI_CHARSET
+    Font.Color = clWindow
+    Font.Height = -20
+    Font.Name = 'Small Fonts'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+    OnClick = LscoreClick
+  end
   object Iplayer: TImage
     Left = 256
-    Height = 32
-    Top = 352
-    Width = 32
+    Height = 30
+    Top = 288
+    Width = 30
     Picture.Data = {
       1754506F727461626C654E6574776F726B47726170686963EA1F000089504E47
       0D0A1A0A0000000D494844520000011A0000012A0806000000CAC99F17000000
@@ -275,39 +310,101 @@ object Form1: TForm1
     }
     Proportional = True
   end
-  object Llives: TLabel
-    Left = 280
-    Height = 24
-    Top = 568
-    Width = 69
-    Caption = 'LIVES:'
-    Font.CharSet = ANSI_CHARSET
-    Font.Color = clWindow
-    Font.Height = -20
-    Font.Name = 'Small Fonts'
-    Font.Pitch = fpVariable
-    Font.Quality = fqDraft
-    Font.Style = [fsBold]
-    ParentColor = False
-    ParentFont = False
-    OnClick = LlivesClick
+  object Swall31: TShape
+    Left = 432
+    Height = 16
+    Top = 384
+    Width = 112
+    Brush.Color = clBlue
+    Pen.Color = clBlue
   end
-  object Lscore: TLabel
-    Left = 56
-    Height = 24
-    Top = 568
-    Width = 68
-    Caption = 'SORE:'
-    Font.CharSet = ANSI_CHARSET
-    Font.Color = clWindow
-    Font.Height = -20
-    Font.Name = 'Small Fonts'
-    Font.Pitch = fpVariable
-    Font.Quality = fqDraft
-    Font.Style = [fsBold]
-    ParentColor = False
-    ParentFont = False
-    OnClick = LscoreClick
+  object Swall32: TShape
+    Left = 432
+    Height = 176
+    Top = 216
+    Width = 16
+    Brush.Color = clBlue
+    Pen.Color = clBlue
+  end
+  object Swall33: TShape
+    Left = 8
+    Height = 16
+    Top = 208
+    Width = 112
+    Brush.Color = clBlue
+    Pen.Color = clBlue
+  end
+  object Swall34: TShape
+    Left = 8
+    Height = 16
+    Top = 384
+    Width = 112
+    Brush.Color = clBlue
+    Pen.Color = clBlue
+  end
+  object Swall35: TShape
+    Left = 104
+    Height = 176
+    Top = 216
+    Width = 16
+    Brush.Color = clBlue
+    Pen.Color = clBlue
+  end
+  object Swall36: TShape
+    Left = 480
+    Height = 16
+    Top = 480
+    Width = 64
+    Brush.Color = clBlue
+    Pen.Color = clBlue
+  end
+  object Swall37: TShape
+    Left = 8
+    Height = 16
+    Top = 480
+    Width = 64
+    Brush.Color = clBlue
+    Pen.Color = clBlue
+  end
+  object Swall38: TShape
+    Left = 48
+    Height = 16
+    Top = 432
+    Width = 96
+    Brush.Color = clBlue
+    Pen.Color = clBlue
+  end
+  object Swall39: TShape
+    Left = 400
+    Height = 16
+    Top = 432
+    Width = 104
+    Brush.Color = clBlue
+    Pen.Color = clBlue
+  end
+  object Swall40: TShape
+    Left = 128
+    Height = 72
+    Top = 440
+    Width = 16
+    Brush.Color = clBlue
+    Pen.Color = clBlue
+  end
+  object Swall41: TShape
+    Left = 400
+    Height = 72
+    Top = 440
+    Width = 16
+    Brush.Color = clBlue
+    Pen.Color = clBlue
+  end
+  object Swall43: TShape
+    Left = 176
+    Height = 16
+    Top = 432
+    Width = 56
+    Brush.Color = clBlue
+    Pen.Color = clBlue
   end
   object Swall1: TShape
     Left = 0
@@ -445,14 +542,6 @@ object Form1: TForm1
     Brush.Color = clBlue
     Pen.Color = clBlue
   end
-  object Swall158: TShape
-    Left = 200
-    Height = 16
-    Top = 272
-    Width = 149
-    Brush.Color = clBlue
-    Pen.Color = clBlue
-  end
   object Swall19: TShape
     Left = 200
     Height = 16
@@ -548,94 +637,6 @@ object Form1: TForm1
     Brush.Color = clBlue
     Pen.Color = clBlue
   end
-  object Swall31: TShape
-    Left = 432
-    Height = 16
-    Top = 384
-    Width = 112
-    Brush.Color = clBlue
-    Pen.Color = clBlue
-  end
-  object Swall32: TShape
-    Left = 432
-    Height = 176
-    Top = 216
-    Width = 16
-    Brush.Color = clBlue
-    Pen.Color = clBlue
-  end
-  object Swall33: TShape
-    Left = 8
-    Height = 16
-    Top = 208
-    Width = 112
-    Brush.Color = clBlue
-    Pen.Color = clBlue
-  end
-  object Swall34: TShape
-    Left = 8
-    Height = 16
-    Top = 384
-    Width = 112
-    Brush.Color = clBlue
-    Pen.Color = clBlue
-  end
-  object Swall35: TShape
-    Left = 104
-    Height = 176
-    Top = 216
-    Width = 16
-    Brush.Color = clBlue
-    Pen.Color = clBlue
-  end
-  object Swall36: TShape
-    Left = 480
-    Height = 16
-    Top = 480
-    Width = 64
-    Brush.Color = clBlue
-    Pen.Color = clBlue
-  end
-  object Swall37: TShape
-    Left = 8
-    Height = 16
-    Top = 480
-    Width = 64
-    Brush.Color = clBlue
-    Pen.Color = clBlue
-  end
-  object Swall38: TShape
-    Left = 48
-    Height = 16
-    Top = 432
-    Width = 96
-    Brush.Color = clBlue
-    Pen.Color = clBlue
-  end
-  object Swall39: TShape
-    Left = 400
-    Height = 16
-    Top = 432
-    Width = 104
-    Brush.Color = clBlue
-    Pen.Color = clBlue
-  end
-  object Swall40: TShape
-    Left = 128
-    Height = 72
-    Top = 440
-    Width = 16
-    Brush.Color = clBlue
-    Pen.Color = clBlue
-  end
-  object Swall41: TShape
-    Left = 400
-    Height = 72
-    Top = 440
-    Width = 16
-    Brush.Color = clBlue
-    Pen.Color = clBlue
-  end
   object Swall42: TShape
     Left = 312
     Height = 16
@@ -644,16 +645,8 @@ object Form1: TForm1
     Brush.Color = clBlue
     Pen.Color = clBlue
   end
-  object Swall43: TShape
-    Left = 176
-    Height = 16
-    Top = 432
-    Width = 56
-    Brush.Color = clBlue
-    Pen.Color = clBlue
-  end
   object TmainTimer: TTimer
-    Interval = 1
+    Interval = 30
     OnTimer = TmainTimerTimer
     left = 504
     top = 568

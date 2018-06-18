@@ -34,7 +34,6 @@ type
     Swall15: TShape;
     Swall16: TShape;
     Swall17: TShape;
-    Swall158: TShape;
     Swall19: TShape;
     Swall2: TShape;
     Swall20: TShape;
@@ -80,7 +79,7 @@ type
   end;
 
 var
-  Form1: TForm1; Iplayer : TImage;  direction : String;            MyThread : TMyThread;
+  Form1: TForm1; Iplayer : TImage;  direction : String;  I : Integer;          MyThread : TMyThread;
 
 implementation
 
@@ -160,11 +159,32 @@ begin
          If direction = 'D' then begin Iplayer.Top:=Iplayer.Top+3; Iplayer.Picture.LoadFromFile('Pacman90.png'); end;
          If direction = 'L' then begin Iplayer.Left:=Iplayer.Left-3; Iplayer.Picture.LoadFromFile('Pacman180.png'); end;
          If direction = 'R' then begin Iplayer.Left:=Iplayer.Left+3;Iplayer.Picture.LoadFromFile('Pacman0.png');  end;
+
+         if (direction <> '') then begin
+             for I:= 0 to Iplayer.Parent.ComponentCount-1 do begin
+             if (Iplayer.Parent.Components[I] is TShape) then begin
+                if ((Iplayer.Top >= (Iplayer.Parent.Components[I] as TShape).Top) or (Iplayer.Top + Iplayer.Height >= (Iplayer.Parent.Components[I] as TShape).Top)) then begin
+                   if ((Iplayer.Top <= (Iplayer.Parent.Components[I] as TShape).Top + (Iplayer.Parent.Components[I] as TShape).Height) or (Iplayer.Top + Iplayer.Height <= (Iplayer.Parent.Components[I] as TShape).Top + (Iplayer.Parent.Components[I] as TShape).Height)) then begin
+                      if ((Iplayer.Left >= (Iplayer.Parent.Components[I] as TShape).Left) or (Iplayer.Left + Iplayer.Width >= (Iplayer.Parent.Components[I] as TShape).Left)) then begin
+                         if ((Iplayer.Left <= (Iplayer.Parent.Components[I] as TShape).Left + (Iplayer.Parent.Components[I] as TShape).Width) or (Iplayer.Left + Iplayer.Width <= (Iplayer.Parent.Components[I] as TShape).Left + (Iplayer.Parent.Components[I] as TShape).Width)) then begin
+                            If direction = 'U' then begin Iplayer.Top:=Iplayer.Top+3; end;
+                            If direction = 'D' then begin Iplayer.Top:=Iplayer.Top-3; end;
+                            If direction = 'L' then begin Iplayer.Left:=Iplayer.Left+3; end;
+                            If direction = 'R' then begin Iplayer.Left:=Iplayer.Left-3 end;
+                            direction := '';
+                         end;
+                      end;
+                   end;
+                end;
+             end;
+         end;
+         end;
 end;
 
          begin
 
                                // MyThread := TMyThread.Create(false);
+
 
 
            end.
