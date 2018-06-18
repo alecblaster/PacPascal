@@ -22,8 +22,57 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-    Image1: TImage;
+    Iplayer: TImage;
+    Llives: TLabel;
+    Lscore: TLabel;
+    Swall1: TShape;
+    Swall10: TShape;
+    Swall11: TShape;
+    Swall12: TShape;
+    Swall13: TShape;
+    Swall14: TShape;
+    Swall15: TShape;
+    Swall16: TShape;
+    Swall17: TShape;
+    Swall158: TShape;
+    Swall19: TShape;
+    Swall2: TShape;
+    Swall20: TShape;
+    Swall21: TShape;
+    Swall22: TShape;
+    Swall23: TShape;
+    Swall24: TShape;
+    Swall25: TShape;
+    Swall26: TShape;
+    Swall27: TShape;
+    Swall28: TShape;
+    Swall29: TShape;
+    Swall3: TShape;
+    Swall30: TShape;
+    Swall31: TShape;
+    Swall32: TShape;
+    Swall33: TShape;
+    Swall34: TShape;
+    Swall35: TShape;
+    Swall36: TShape;
+    Swall37: TShape;
+    Swall38: TShape;
+    Swall39: TShape;
+    Swall4: TShape;
+    Swall40: TShape;
+    Swall41: TShape;
+    Swall42: TShape;
+    Swall43: TShape;
+    Swall5: TShape;
+    Swall6: TShape;
+    Swall7: TShape;
+    Swall8: TShape;
+    Swall9: TShape;
+    TmainTimer: TTimer;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure LlivesClick(Sender: TObject);
+    procedure LscoreClick(Sender: TObject);
+    procedure TmainTimerTimer(Sender: TObject);
   private
 
   public
@@ -31,7 +80,7 @@ type
   end;
 
 var
-  Form1: TForm1; Image1 : TImage;  direction : String;            MyThread : TMyThread;
+  Form1: TForm1; Iplayer : TImage;  direction : String;            MyThread : TMyThread;
 
 implementation
 
@@ -51,7 +100,7 @@ implementation
 
   procedure TMyThread.movePlayerUp;
   begin
-   Image1.Top:=Image1.Top-10;
+   Iplayer.Top:=Iplayer.Top-10;
   end;
 
   procedure TMyThread.Execute;
@@ -79,7 +128,7 @@ implementation
 
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word;      Shift: TShiftState);
 begin
-  Form1.Caption:=inttostr(key);
+  Form1.Caption:=inttostr(Iplayer.Left);
   If key = 38 then begin
     direction := 'U';
   end;
@@ -94,9 +143,30 @@ begin
   end;
 
 end;
+
+procedure TForm1.LlivesClick(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.LscoreClick(Sender: TObject);
+begin
+
+end;
+
+procedure TForm1.TmainTimerTimer(Sender: TObject);
+begin
+         If direction = 'U' then begin Iplayer.Top:=Iplayer.Top-3; Iplayer.Picture.LoadFromFile('Pacman270.png'); end;
+         If direction = 'D' then begin Iplayer.Top:=Iplayer.Top+3; Iplayer.Picture.LoadFromFile('Pacman90.png'); end;
+         If direction = 'L' then begin Iplayer.Left:=Iplayer.Left-3; Iplayer.Picture.LoadFromFile('Pacman180.png'); end;
+         If direction = 'R' then begin Iplayer.Left:=Iplayer.Left+3;Iplayer.Picture.LoadFromFile('Pacman0.png');  end;
+end;
+
          begin
-                                direction
-                                MyThread := TMyThread.Create(false);
+
+                               // MyThread := TMyThread.Create(false);
+
+
            end.
 end.
 
