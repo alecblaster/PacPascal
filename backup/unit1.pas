@@ -146,7 +146,6 @@ procedure TForm1.TanimTimer(Sender: TObject); begin
           frame := frame +1;
           if (frame > 1) then begin frame := 0; end;
   end else if (anim = 'WALKING') then begin
-            Form1.Caption:=inttostr(frame);
             If (direction = 'U') then begin if (frame = 0) then begin Iplayer.Picture.LoadFromFile('Pacman270.png'); end else begin Iplayer.Picture.LoadFromFile('Pacman270_closed.png'); end; end;
             If (direction = 'D') then begin if (frame = 0) then begin Iplayer.Picture.LoadFromFile('Pacman90.png'); end else begin Iplayer.Picture.LoadFromFile('Pacman90_closed.png'); end; end;
             If (direction = 'L') then begin if (frame = 0) then begin Iplayer.Picture.LoadFromFile('Pacman180.png'); end else begin Iplayer.Picture.LoadFromFile('Pacman180_closed.png'); end; end;

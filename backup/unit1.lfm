@@ -17,6 +17,7 @@ object Form1: TForm1
     Top = 472
     Width = 32
     Brush.Color = clBlack
+    Brush.Style = bsBDiagonal
   end
   object Sspacer2: TShape
     Left = 504
@@ -24,6 +25,7 @@ object Form1: TForm1
     Top = 176
     Width = 24
     Brush.Color = clBlack
+    Brush.Style = bsBDiagonal
   end
   object Sspacer3: TShape
     Left = 416
@@ -31,6 +33,7 @@ object Form1: TForm1
     Top = 168
     Width = 24
     Brush.Color = clBlack
+    Brush.Style = bsBDiagonal
   end
   object Sspacer4: TShape
     Left = 136
@@ -38,6 +41,7 @@ object Form1: TForm1
     Top = 168
     Width = 24
     Brush.Color = clBlack
+    Brush.Style = bsBDiagonal
   end
   object Sspacer1: TShape
     Left = 56
@@ -45,6 +49,7 @@ object Form1: TForm1
     Top = 176
     Width = 24
     Brush.Color = clBlack
+    Brush.Style = bsBDiagonal
   end
   object Sspacer: TShape
     Left = 248
@@ -52,6 +57,7 @@ object Form1: TForm1
     Top = 216
     Width = 80
     Brush.Color = clBlack
+    Brush.Style = bsBDiagonal
   end
   object Lscore: TLabel
     Left = 56
