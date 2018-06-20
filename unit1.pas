@@ -8,16 +8,13 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, ActnList, ExtCtrls;
 
 type
-             TMyThread = class(TThread)
-    private
-      fStatusText : string;
-      procedure ShowStatus;
-      procedure movePlayerUp;
-    protected
-      procedure Execute; override;
-    public
-      Constructor Create(CreateSuspended : boolean);
-    end;
+     TGhost = class
+  private
+    img: TImage; direction: String; oldDirection: String;
+  public
+    constructor create(image: TImage); overload;
+    procedure tick();
+  end;
 
   { TForm1 }
 
@@ -31,17 +28,23 @@ type
     Ighost3: TImage;
     Ighost4: TImage;
     Iplayer: TImage;
-    Llives: TLabel;
+    Lwin: TLabel;
     Lscore: TLabel;
+    LgameOver: TLabel;
+    Sspacer: TShape;
+    Sspacer1: TShape;
+    Sspacer2: TShape;
+    Sspacer3: TShape;
+    Sspacer4: TShape;
+    Sspacer5: TShape;
     Swall1: TShape;
     Swall10: TShape;
+    Swall11: TShape;
+    Swall12: TShape;
     Swall13: TShape;
     Swall14: TShape;
     Swall15: TShape;
     Swall16: TShape;
-    Swall17: TShape;
-    Swall18: TShape;
-    Swall19: TShape;
     Swall2: TShape;
     Swall20: TShape;
     Swall21: TShape;
@@ -56,7 +59,6 @@ type
     Swall31: TShape;
     Swall32: TShape;
     Swall33: TShape;
-    Swall34: TShape;
     Swall35: TShape;
     Swall36: TShape;
     Swall37: TShape;
@@ -76,13 +78,13 @@ type
     Swall8: TShape;
     Swall9: TShape;
     TghostsNonHostile: TTimer;
+    Tanim: TTimer;
     TmainTimer: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure LlivesClick(Sender: TObject);
-    procedure LscoreClick(Sender: TObject);
-    procedure Swall36ChangeBounds(Sender: TObject);
+    procedure TanimTimer(Sender: TObject);
     procedure TghostsNonHostileTimer(Sender: TObject);
+    procedure morphGhosts(hostile : boolean);
     procedure TmainTimerTimer(Sender: TObject);
   private
 
@@ -91,55 +93,16 @@ type
   end;
 
 var
-  Form1: TForm1; Iplayer : TImage;  direction : String;  I : Integer;  score: Integer; x : Integer; y : Integer;   MyForm : TImage;    MyThread : TMyThread; ghostsHostile : boolean;
+  Form1: TForm1; Iplayer : TImage;  direction : String; I : Integer;  score: Integer; x : Integer; y : Integer; wouldCollide : boolean;   MyForm : TImage; ghostsHostile : boolean; remDots : Integer; ghost1: TGhost; ghost2: TGhost; ghost3: TGhost; ghost4: TGhost; anim : String; frame : Integer; playerSpeed : Integer; ghostSpeed : Integer;
 
 implementation
 
 {$R *.lfm}
 
-                       constructor TMyThread.Create(CreateSuspended : boolean);
-  begin
-    inherited Create(CreateSuspended); // because this is black box in OOP and can reset inherited to the opposite again...
-    FreeOnTerminate := True;  // better code...
-  end;
-
-  procedure TMyThread.ShowStatus;
-  // this method is executed by the mainthread and can therefore access all GUI elements.
-  begin
-    Form1.Caption := fStatusText;
-  end;
-
-  procedure TMyThread.movePlayerUp;
-  begin
-   Iplayer.Top:=Iplayer.Top-10;
-  end;
-
-  procedure TMyThread.Execute;
-  var
-    newStatus : string;
-  begin
-    fStatusText := 'TMyThread Starting...';
-    Synchronize(@Showstatus);
-    fStatusText := 'TMyThread Running...';
-    while (not Terminated) do
-      begin
-        If direction = 'U' then begin
-                                      Synchronize(@movePlayerUp);
-                                               end;
-
-        if NewStatus <> fStatusText then
-          begin
-            fStatusText := newStatus;
-            Synchronize(@Showstatus);
-          end;
-      end;
-  end;
-
 { TForm1 }
 
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word;      Shift: TShiftState);
 begin
-  Form1.Caption:=inttostr(Iplayer.Left);
   If key = 38 then begin
     direction := 'U';
   end;
@@ -155,14 +118,43 @@ begin
 
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
-begin
+procedure TForm1.TanimTimer(Sender: TObject); begin
+  if (anim = 'DEATH') then begin
+   if ((direction = 'U') and (frame = 0)) then begin frame := 1; end;
+     case frame of
+               0: Iplayer.Picture.LoadFromFile('Pacman270.png');
+               1: Iplayer.Picture.LoadFromFile('Pacman270_death1.png');
+               2: Iplayer.Picture.LoadFromFile('Pacman270_death2.png');
+               3: Iplayer.Picture.LoadFromFile('Pacman270_death3.png');
+               4: Iplayer.Picture.LoadFromFile('Pacman270_death4.png');
+               5: Iplayer.Visible:=false;
+          end;
+          frame := frame +1;
+          if (frame > 5) then begin frame := 0; anim:='GAME_OVER'; Tanim.Interval:=250; end;
+  end else if (anim = 'GAME_OVER') then begin
+      case frame of
+               0: LgameOver.Visible:=true;
+               1: LgameOver.Visible:=false;
+          end;
+          frame := frame +1;
+          if (frame > 1) then begin frame := 0; end;
+  end else if (anim = 'WIN') then begin
+      case frame of
+               0: Lwin.Font.Color:=TColor($00FFFF);
+               1: Lwin.Font.Color:=TColor($FFFFFF);
+          end;
+          frame := frame +1;
+          if (frame > 1) then begin frame := 0; end;
+  end else if (anim = 'WALKING') then begin
+            If (direction = 'U') then begin if (frame = 0) then begin Iplayer.Picture.LoadFromFile('Pacman270.png'); end else begin Iplayer.Picture.LoadFromFile('Pacman270_closed.png'); end; end;
+            If (direction = 'D') then begin if (frame = 0) then begin Iplayer.Picture.LoadFromFile('Pacman90.png'); end else begin Iplayer.Picture.LoadFromFile('Pacman90_closed.png'); end; end;
+            If (direction = 'L') then begin if (frame = 0) then begin Iplayer.Picture.LoadFromFile('Pacman180.png'); end else begin Iplayer.Picture.LoadFromFile('Pacman180_closed.png'); end; end;
+            If (direction = 'R') then begin if (frame = 0) then begin Iplayer.Picture.LoadFromFile('Pacman0.png');  end else begin Iplayer.Picture.LoadFromFile('Pacman0_closed.png'); end; end;
 
-end;
 
-procedure TForm1.LlivesClick(Sender: TObject);
-begin
-
+          frame := frame +1;
+          if (frame > 1) then begin frame := 0; end;
+  end;
 end;
 
 function collidesWith(obj1 : TControl; obj2: TControl): boolean; begin
@@ -180,12 +172,42 @@ function collidesWith(obj1 : TControl; obj2: TControl): boolean; begin
          exit(false);
 end;
 
-procedure TForm1.LscoreClick(Sender: TObject); begin
+function wouldCollideWith(x: Integer; y: Integer; height: Integer; width: Integer; obj2: TControl): boolean; begin
+                if ((y >= obj2.Top) or (y + height >= obj2.Top)) then begin
+                   if ((y <= obj2.Top + obj2.Height) or (y + height <= obj2.Top + obj2.Height)) then begin
+                      if ((x >= obj2.Left) or (x + width >= obj2.Left)) then begin
+                         if ((x <= obj2.Left + obj2.Width) or (x + width <= obj2.Left + obj2.Width)) then begin
+                            exit(true);
+                         end;
+                      end;
+                   end;
+                end;
 
-  x := 30;
+         exit(false);
+end;
+
+procedure TForm1.FormCreate(Sender: TObject); begin
+     ghost1 := TGhost.Create(Form1.Ighost1);
+     ghost2 := TGhost.Create(Form1.Ighost2);
+     ghost3 := TGhost.Create(Form1.Ighost3);
+     ghost4 := TGhost.Create(Form1.Ighost4);
+     x := 30;
   while (x < Form1.Width - 30) do begin
     y := 29;
     while (y < Form1.Height - 60) do begin
+
+      I := 0; wouldCollide := false;
+      while (I < Iplayer.Parent.ComponentCount) do begin
+        if ((Iplayer.Parent.Components[I] is TShape) or ((Iplayer.Parent.Components[I] is TImage) and ((Iplayer.Parent.Components[I] as TImage).Name.StartsWith('IbigDot')))) then begin
+           if (wouldCollideWith(x, y, 5, 5, (Iplayer.Parent.Components[I] as TControl))) then begin
+              wouldCollide := true;
+              break;
+           end;
+        end;
+        I := I + 1;
+      end;
+
+      if (wouldCollide = false) then begin
       MyForm:=TImage.Create(Iplayer.Parent);
       MyForm.Name := 'Idot' + inttostr(x) + inttostr(y);
       MyForm.SetBounds(x, y, 5, 5);
@@ -193,25 +215,52 @@ procedure TForm1.LscoreClick(Sender: TObject); begin
       MyForm.Stretch:=true;
       MyForm.Proportional:=true;
       MyForm.Picture.LoadFromFile('Dot.png');
-      y := y + 30;
-
-      I := 0;
-      while (I < Iplayer.Parent.ComponentCount) do begin
-        if ((Iplayer.Parent.Components[I] is TShape) or ((Iplayer.Parent.Components[I] is TImage) and ((Iplayer.Parent.Components[I] as TImage).Name.StartsWith('IbigDot')))) then begin
-           if (collidesWith(MyForm, (Iplayer.Parent.Components[I] as TControl))) then begin
-            MyForm.Parent:=nil;
-           end;
-        end;
-        I := I + 1;
       end;
+
+      y := y + 30;
     end;
     x := x + 30;
   end;
 end;
 
-procedure TForm1.Swall36ChangeBounds(Sender: TObject);
-begin
+constructor TGhost.create(image: TImage); begin
+          img := image;
+          direction := 'U';
+end;
 
+procedure TGhost.tick(); begin
+  if (img.Visible = true) then begin
+
+   If direction = 'U' then begin img.Top:=img.Top-ghostSpeed; end;
+   If direction = 'D' then begin img.Top:=img.Top+ghostSpeed; end;
+   If direction = 'L' then begin img.Left:=img.Left-ghostSpeed; end;
+   If direction = 'R' then begin img.Left:=img.Left+ghostSpeed; end;
+
+   I := 0; remDots := 0;
+          while (I < img.Parent.ComponentCount) do begin
+             if (img.Parent.Components[I] is TControl) then begin
+                  if (collidesWith(img, (img.Parent.Components[I] as TControl))) then begin
+                     if ((img.Parent.Components[I] is TShape) and ((img.Parent.Components[I] as TControl).Name.StartsWith('Swall'))) then begin
+                        If direction = 'U' then begin img.Top:=img.Top+ghostSpeed; end;
+                        If direction = 'D' then begin img.Top:=img.Top-ghostSpeed; end;
+                        If direction = 'L' then begin img.Left:=img.Left+ghostSpeed; end;
+                        If direction = 'R' then begin img.Left:=img.Left-ghostSpeed; end;
+
+                        oldDirection := direction;
+
+                        case random(4) of
+                        0 : direction := 'U';
+                        1 : direction := 'D';
+                        2 : direction := 'L';
+                        3 : direction := 'R';
+                        end;
+                     end;
+                  end;
+             end;
+
+             I := I + 1;
+          end;
+          end;
 end;
 
 procedure TForm1.TghostsNonHostileTimer(Sender: TObject); begin
@@ -219,7 +268,7 @@ procedure TForm1.TghostsNonHostileTimer(Sender: TObject); begin
      Ighost2.Picture.LoadFromFile('GhostPink.png');
   Ighost3.Picture.LoadFromFile('GhostOrange.png');
   Ighost4.Picture.LoadFromFile('GhostBlue.png');
-     TghostsNonHostile.Enabled:=false;
+  TghostsNonHostile.Enabled := false;
      ghostsHostile := true;
 end;
 
@@ -228,45 +277,65 @@ procedure addScore(points: Integer); begin
 
 end;
 
-procedure morphGhosts(hostile : boolean); begin
+procedure TForm1.morphGhosts(hostile : boolean); begin
+          ghostsHostile := hostile;
 
+          if (hostile = false) then begin
+            TghostsNonHostile.Enabled:=false;
+            TghostsNonHostile.Enabled:=true;
+          end;
 end;
 
 procedure TForm1.TmainTimerTimer(Sender: TObject); begin
-         If direction = 'U' then begin Iplayer.Top:=Iplayer.Top-3; Iplayer.Picture.LoadFromFile('Pacman270.png'); end;
-         If direction = 'D' then begin Iplayer.Top:=Iplayer.Top+3; Iplayer.Picture.LoadFromFile('Pacman90.png'); end;
-         If direction = 'L' then begin Iplayer.Left:=Iplayer.Left-3; Iplayer.Picture.LoadFromFile('Pacman180.png'); end;
-         If direction = 'R' then begin Iplayer.Left:=Iplayer.Left+3;Iplayer.Picture.LoadFromFile('Pacman0.png');  end;
+         If direction = 'U' then begin Iplayer.Top:=Iplayer.Top-playerSpeed; end;
+         If direction = 'D' then begin Iplayer.Top:=Iplayer.Top+playerSpeed; end;
+         If direction = 'L' then begin Iplayer.Left:=Iplayer.Left-playerSpeed; end;
+         If direction = 'R' then begin Iplayer.Left:=Iplayer.Left+playerSpeed; end;
 
-         if (direction <> '') then begin
+         ghost1.tick(); ghost2.tick(); ghost3.tick(); ghost4.tick();
+
          I := 0;
           while (I < Iplayer.Parent.ComponentCount) do begin
              if (Iplayer.Parent.Components[I] is TControl) then begin
+               if(((Iplayer.Parent.Components[I] as TControl).Name.StartsWith('Idot')) or ((Iplayer.Parent.Components[I] as TControl).Name.StartsWith('IbigDot'))) then begin
+                                                 remDots := remDots + 1;
+               end;
                   if (collidesWith(Iplayer, (Iplayer.Parent.Components[I] as TControl))) then begin
-                     if (Iplayer.Parent.Components[I] is TShape) then begin
-                        If direction = 'U' then begin Iplayer.Top:=Iplayer.Top+3; end;
-                        If direction = 'D' then begin Iplayer.Top:=Iplayer.Top-3; end;
-                        If direction = 'L' then begin Iplayer.Left:=Iplayer.Left+3; end;
-                        If direction = 'R' then begin Iplayer.Left:=Iplayer.Left-3 end;
+                     if ((Iplayer.Parent.Components[I] is TShape) and ((Iplayer.Parent.Components[I] as TControl).Name.StartsWith('Swall'))) then begin
+                        If direction = 'U' then begin Iplayer.Top:=Iplayer.Top+playerSpeed; end;
+                        If direction = 'D' then begin Iplayer.Top:=Iplayer.Top-playerSpeed; end;
+                        If direction = 'L' then begin Iplayer.Left:=Iplayer.Left+playerSpeed; end;
+                        If direction = 'R' then begin Iplayer.Left:=Iplayer.Left-playerSpeed end;
                         direction := '';
-                     end;
-
-                     if (Iplayer.Parent.Components[I] is TImage) then begin
+                     end else if (Iplayer.Parent.Components[I] is TImage) then begin
                         if (((Iplayer.Parent.Components[I] as TImage).Name.StartsWith('Idot')) or ((Iplayer.Parent.Components[I] as TImage).Name.StartsWith('IbigDot'))) then begin
                            addScore(10);
-                           (Iplayer.Parent.Components[I] as TImage).Destroy;
 
                            if ((Iplayer.Parent.Components[I] as TImage).Name.StartsWith('IbigDot')) then begin
-                              ghostsHostile := false;
-                              TghostsNonHostile.Enabled:=false;
+                              morphGhosts(false);
+
                               Ighost1.Picture.LoadFromFile('GhostNonHostile.png');
                               Ighost2.Picture.LoadFromFile('GhostNonHostile.png');
                               Ighost3.Picture.LoadFromFile('GhostNonHostile.png');
                               Ighost4.Picture.LoadFromFile('GhostNonHostile.png');
-                              TghostsNonHostile.Enabled:=true;
+
                            end;
 
+                           (Iplayer.Parent.Components[I] as TImage).Destroy;
                            I := I - 1;
+                        end else if (((Iplayer.Parent.Components[I] as TImage).Name.StartsWith('Ighost')) and ((Iplayer.Parent.Components[I] as TImage).Visible = true)) then begin
+                           if (ghostsHostile) then begin
+                           TmainTimer.Enabled:=false;
+                           Tanim.Interval:=500;
+                           anim := 'DEATH';
+
+                           end else begin
+                             addScore(200);
+                             (Iplayer.Parent.Components[I] as TImage).Visible:=false;
+
+                             I := I - 1;
+                           end;
+
                         end;
 
                      end;
@@ -277,20 +346,21 @@ procedure TForm1.TmainTimerTimer(Sender: TObject); begin
 
           end;
 
-          if (ghostsHostile = false) then begin
-
-          end;
-
-         end;
-
          Lscore.Caption := 'SCORE: ' + inttostr(score);
+         if (remDots = 0) then begin
+         Lwin.Visible:=true;
+            TmainTimer.Enabled:=false;
+            Tanim.Interval:=250;
+                           anim := 'WIN';
+         end;
 end;
 
          begin
-
+              anim := 'WALKING';
              ghostsHostile := true;
-
-
+             randomize();
+             playerSpeed:=5;
+             ghostSpeed:=6;
 
            end.
 end.
